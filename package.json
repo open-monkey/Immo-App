@@ -1,0 +1,10 @@
+{
+  "name": "immo-app",
+  "private": true,
+  "packageManager": "pnpm@11.0.8",
+  "scripts": {
+    "dev": "pnpm --filter immo-frontend dev",
+    "build": "pnpm -r build",
+    "test": "pnpm -r test"
+  }
+}
