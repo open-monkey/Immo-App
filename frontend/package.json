@@ -1,0 +1,37 @@
+{
+  "name": "immo-frontend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "tsc -b && vite build",
+    "test": "vitest run",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@hookform/resolvers": "^5.2.2",
+    "@tanstack/react-query": "^5.51.0",
+    "decimal.js-light": "^2.5.1",
+    "pdfmake": "^0.2.20",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1",
+    "react-hook-form": "^7.65.0",
+    "react-router-dom": "^6.24.0",
+    "recharts": "^3.2.1",
+    "zustand": "^5.0.8",
+    "zod": "^4.1.12"
+  },
+  "devDependencies": {
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
+    "@types/node": "^25.6.0",
+    "@types/react": "^18.3.3",
+    "@types/react-dom": "^18.3.0",
+    "@vitejs/plugin-react": "^4.3.1",
+    "jsdom": "^29.0.2",
+    "typescript": "^5.5.2",
+    "vite": "^5.3.3",
+    "vitest": "^2.1.8"
+  }
+}
