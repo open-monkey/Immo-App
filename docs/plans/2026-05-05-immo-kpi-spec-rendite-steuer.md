@@ -59,7 +59,7 @@ Not allowed here:
 ### Layer B — Finanzierung & Hebel
 
 These KPIs answer:
-- What does this deal do to the investor's actual money and monthly burden?
+- What does this deal do to the investor’s actual money and monthly burden?
 - How hard does leverage work for or against the user?
 
 Allowed here:
@@ -249,7 +249,7 @@ Display priority:
 - secondary in overall summary, primary within financing block
 
 Tooltip guidance:
-- Shows how the investor's own money performs after debt service and running costs.
+- Shows how the investor’s own money performs after debt service and running costs.
 - Strong leverage can raise or crush this KPI.
 
 Explicit exclusions:
