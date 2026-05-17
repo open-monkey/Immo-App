@@ -87,6 +87,7 @@ export const de = {
     sonstigeKostenPa: 'Sonstige Kosten p. a.',
     instandhaltungskostenPa: 'Instandhaltung p. a.',
     kostensteigerungSatz: 'Kostensteigerung p. a.',
+    bausparvertragMonatlich: 'Bausparvertrag monatlich',
     leerstandsmonateProJahr: 'Leerstandsmonate pro Jahr',
     erstvermietungsleerstandMonate: 'Leerstand 1. Jahr',
     mietausfallwagnisSatz: 'Mietausfallwagnis',

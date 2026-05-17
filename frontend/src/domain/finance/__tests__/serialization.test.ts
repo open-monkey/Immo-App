@@ -20,8 +20,8 @@ describe('serialization', () => {
   });
 
   it('deserializes SerializedInputs fixtures to Decimals', () => {
-    const fixture = FIXTURES[4];
-    const inputs = deserialize(fixture.serialized);
+    const fixture = FIXTURES[5];
+    const inputs = deserialize(fixture.serialized!);
 
     expect(inputs.kaufpreis instanceof Decimal).toBe(true);
     expect(inputs.steuerModulAktiv).toBe(true);

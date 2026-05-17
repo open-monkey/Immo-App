@@ -1,4 +1,5 @@
-import type { ScenarioConfig } from '../types';
+import Decimal from 'decimal.js-light';
+import type { ImmoInputs, SerializedInputs, ScenarioConfig } from '../types';
 import { buildDefaultScenario } from '../defaults';
 
 /**
@@ -110,3 +111,151 @@ export const highLeverageScenario: ScenarioConfig = buildDefaultScenario({
   annualAppreciation: 0.04,
   sellingCostPercent: 0.06,
 });
+
+// ── Immo-specific fixtures ───────────────────────────────────────
+
+function immo(
+  overrides?: Partial<ImmoInputs>,
+): ImmoInputs {
+  const d = (v: string | number) => new Decimal(v);
+  const base: ImmoInputs = {
+    kaufpreis: d(250000),
+    wohnflaecheQm: d(65),
+    bundesland: 'BW',
+    kaufnebenkostenModus: 'detailliert' as const,
+    kaufnebenkostenSumme: undefined,
+    grunderwerbsteuerSatz: d('0.05'),
+    notarGrundbuchSatz: d('0.015'),
+    maklerprovisionSatz: d('0.0357'),
+    sanierungskostenSumme: d(0),
+    sanierungWertanrechnungSatz: d('0.7'),
+    eigenkapital: d(60000),
+    finanziertePosten: new Set(['kaufpreis', 'kaufnebenkosten', 'sanierung'] as const),
+    phase1Jahre: 10,
+    phase1Sollzins: d('0.04'),
+    phase1AnfTilgung: d('0.02'),
+    phase1Sondertilgung: d(0),
+    phase2Jahre: 10,
+    phase2Sollzins: d('0.045'),
+    phase2AnfTilgung: d('0.025'),
+    phase2Sondertilgung: d(0),
+    phase3Sollzins: d('0.05'),
+    phase3AnfTilgung: d('0.03'),
+    phase3Sondertilgung: d(0),
+    tilgungsplanMaxJahre: 40,
+    monatsnettokaltmiete: d(1050),
+    mietsteigerungSatz: d('0.015'),
+    kostenModus: 'detailliert' as const,
+    nichtUmlagefaehigeKostenSumme: undefined,
+    hausgeldNichtUmlagefaehigPa: d(0),
+    verwaltungskostenPa: d(0),
+    versicherungenPa: d(0),
+    sonstigeKostenPa: d(0),
+    instandhaltungskostenPa: d(600),
+    kostensteigerungSatz: d('0.02'),
+    leerstandsmonateProJahr: d('0.5'),
+    erstvermietungsleerstandMonate: d(0),
+    mietausfallwagnisSatz: d('0.02'),
+    steuerModulAktiv: false,
+    persoenlicherSteuersatz: undefined,
+    gebaeudeanteilSatz: undefined,
+    afaSatz: undefined,
+    betrachtungszeitraumJahre: 10,
+    wertsteigerungSatz: d('0.01'),
+    bausparvertragMonatlich: undefined,
+  };
+  if (!overrides) return base;
+  return { ...base, ...overrides, finanziertePosten: overrides.finanziertePosten ?? base.finanziertePosten };
+}
+
+type Fixture = {
+  id: string;
+  inputs: ImmoInputs;
+  serialized?: SerializedInputs;
+};
+
+export const FIXTURES: Fixture[] = [
+  {
+    id: 'STANDARD_BW',
+    inputs: immo(),
+  },
+  {
+    id: 'OHNE_FK',
+    inputs: immo({ eigenkapital: d(300000), finanziertePosten: new Set(['kaufpreis'] as const) }),
+  },
+  {
+    id: 'HOHE_TILGUNG',
+    inputs: immo({ phase1AnfTilgung: d('0.05') }),
+  },
+  {
+    id: 'LEERSTANDSWUNDE',
+    inputs: immo({ leerstandsmonateProJahr: d(3), erstvermietungsleerstandMonate: d(6) }),
+  },
+  {
+    id: 'STEUER_AKTIV',
+    inputs: immo({
+      steuerModulAktiv: true,
+      persoenlicherSteuersatz: d('0.42'),
+      gebaeudeanteilSatz: d('0.8'),
+      afaSatz: d('0.02'),
+    }),
+  },
+  {
+    id: 'STEUER_AKTIV_SERIALIZED',
+    inputs: immo({
+      steuerModulAktiv: true,
+      persoenlicherSteuersatz: d('0.42'),
+      gebaeudeanteilSatz: d('0.8'),
+      afaSatz: d('0.02'),
+    }),
+    serialized: {
+      kaufpreis: '250000',
+      wohnflaecheQm: '65',
+      bundesland: 'BW',
+      kaufnebenkostenModus: 'detailliert',
+      grunderwerbsteuerSatz: '0.05',
+      notarGrundbuchSatz: '0.015',
+      maklerprovisionSatz: '0.0357',
+      sanierungskostenSumme: '0',
+      sanierungWertanrechnungSatz: '0.7',
+      eigenkapital: '60000',
+      finanziertePosten: ['kaufpreis', 'kaufnebenkosten', 'sanierung'],
+      phase1Jahre: 10,
+      phase1Sollzins: '0.04',
+      phase1AnfTilgung: '0.02',
+      phase1Sondertilgung: '0',
+      phase2Jahre: 10,
+      phase2Sollzins: '0.045',
+      phase2AnfTilgung: '0.025',
+      phase2Sondertilgung: '0',
+      phase3Sollzins: '0.05',
+      phase3AnfTilgung: '0.03',
+      phase3Sondertilgung: '0',
+      tilgungsplanMaxJahre: 40,
+      monatsnettokaltmiete: '1050',
+      mietsteigerungSatz: '0.015',
+      kostenModus: 'detailliert',
+      hausgeldNichtUmlagefaehigPa: '0',
+      verwaltungskostenPa: '0',
+      versicherungenPa: '0',
+      sonstigeKostenPa: '0',
+      instandhaltungskostenPa: '600',
+      kostensteigerungSatz: '0.02',
+      leerstandsmonateProJahr: '0.5',
+      erstvermietungsleerstandMonate: '0',
+      mietausfallwagnisSatz: '0.02',
+      steuerModulAktiv: true,
+      persoenlicherSteuersatz: '0.42',
+      gebaeudeanteilSatz: '0.8',
+      afaSatz: '0.02',
+      betrachtungszeitraumJahre: 10,
+      wertsteigerungSatz: '0.01',
+    } as SerializedInputs,
+  },
+];
+
+function d(v: string | number): Decimal {
+  return new Decimal(v);
+}
+
+export { d, immo };

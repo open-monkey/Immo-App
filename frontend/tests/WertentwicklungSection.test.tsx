@@ -47,7 +47,7 @@ describe('Wertentwicklung section', () => {
     const section = screen.getByRole('region', { name: /wertentwicklung/i });
 
     expect(within(section).queryByText(/diese sektion wird im nächsten/i)).not.toBeInTheDocument();
-    expect(within(section).getByText('Marktwert Ende Betrachtung')).toBeInTheDocument();
+    expect(within(section).getByText('Marktwert Ende')).toBeInTheDocument();
     expect(within(section).getByText('Vermögensbilanz Ende')).toBeInTheDocument();
     expect(within(section).getByRole('img', { name: /wertentwicklung über die jahre/i })).toBeInTheDocument();
     expect(within(section).getByText('Jahr 0')).toBeInTheDocument();

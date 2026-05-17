@@ -106,6 +106,7 @@ export type InputsFormValues = {
   sonstigeKostenPa: string;
   instandhaltungskostenPa: string;
   kostensteigerungSatz: string;
+  bausparvertragMonatlich: string;
   leerstandsmonateProJahr: string;
   erstvermietungsleerstandMonate: string;
   mietausfallwagnisSatz: string;
@@ -152,6 +153,7 @@ export const InputsSchema = z.object({
   sonstigeKostenPa: nonNegativeDecimalField.or(z.literal('')),
   instandhaltungskostenPa: nonNegativeDecimalField,
   kostensteigerungSatz: percentField,
+  bausparvertragMonatlich: nonNegativeDecimalField.or(z.literal('')),
   leerstandsmonateProJahr: nonNegativeDecimalField,
   erstvermietungsleerstandMonate: nonNegativeDecimalField,
   mietausfallwagnisSatz: percentField,
@@ -223,6 +225,7 @@ export function createFormValuesFromInputs(inputs: ImmoInputs): InputsFormValues
     sonstigeKostenPa: decimalToString(inputs.sonstigeKostenPa),
     instandhaltungskostenPa: decimalToString(inputs.instandhaltungskostenPa),
     kostensteigerungSatz: percentToUiString(inputs.kostensteigerungSatz),
+    bausparvertragMonatlich: decimalToString(inputs.bausparvertragMonatlich),
     leerstandsmonateProJahr: decimalToString(inputs.leerstandsmonateProJahr),
     erstvermietungsleerstandMonate: decimalToString(inputs.erstvermietungsleerstandMonate),
     mietausfallwagnisSatz: percentToUiString(inputs.mietausfallwagnisSatz),
@@ -285,6 +288,7 @@ export function parseInputsFormValues(values: InputsFormValues) {
     sonstigeKostenPa: data.sonstigeKostenPa === '' ? undefined : parseDecimal(data.sonstigeKostenPa),
     instandhaltungskostenPa: parseDecimal(data.instandhaltungskostenPa),
     kostensteigerungSatz: parseDecimal(data.kostensteigerungSatz).div(100),
+    bausparvertragMonatlich: data.bausparvertragMonatlich === '' ? undefined : parseDecimal(data.bausparvertragMonatlich),
     leerstandsmonateProJahr: parseDecimal(data.leerstandsmonateProJahr),
     erstvermietungsleerstandMonate: parseDecimal(data.erstvermietungsleerstandMonate),
     mietausfallwagnisSatz: parseDecimal(data.mietausfallwagnisSatz).div(100),

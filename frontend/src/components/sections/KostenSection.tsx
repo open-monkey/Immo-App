@@ -39,6 +39,9 @@ export function KostenSection({ register, errors, values, isOpen, onToggle }: Pr
           <CurrencyInput label={de.fields.instandhaltungskostenPa} error={message(errors.instandhaltungskostenPa?.message)} {...register('instandhaltungskostenPa')} />
         </div>
       )}
+      <div className="form-grid" style={{ marginTop: '1rem' }}>
+        <CurrencyInput label={de.fields.bausparvertragMonatlich} error={message(errors.bausparvertragMonatlich?.message)} {...register('bausparvertragMonatlich')} />
+      </div>
     </Section>
   );
 }
