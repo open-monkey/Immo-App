@@ -44,10 +44,12 @@ function DSCRCard() {
 export function DashboardPage() {
   const currentInputs = useImmoStore((state) => state.inputs);
   const setInputs = useImmoStore((state) => state.setInputs);
+  const result = useImmoStore((state) => state.result);
   const sections = useUiStore((state) => state.sections);
   const setSectionOpen = useUiStore((state) => state.setSectionOpen);
   const [saving, setSaving] = useState(false);
   const [saveMessage, setSaveMessage] = useState<string | null>(null);
+  const [autoSyncKaltmiete, setAutoSyncKaltmiete] = useState(true);
 
   async function handleSave() {
     setSaving(true);
@@ -80,6 +82,26 @@ export function DashboardPage() {
       setInputs(parsed.data);
     }
   }, [setInputs, watchedValues]);
+
+  useEffect(() => {
+    if (!autoSyncKaltmiete) return;
+    const bePerQm = result.kpis.breakEvenMieteProQmLiquiditaet?.value?.toNumber();
+    const flaeche = parseFloat(watchedValues.wohnflaecheQm ?? '');
+    if (bePerQm == null || !isFinite(bePerQm) || !flaeche || flaeche <= 0) return;
+    const target = (bePerQm * flaeche).toFixed(2);
+    if (watchedValues.monatsnettokaltmiete !== target) {
+      form.setValue('monatsnettokaltmiete', target, { shouldDirty: false, shouldValidate: true });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [autoSyncKaltmiete, result.kpis.breakEvenMieteProQmLiquiditaet?.value?.toString(), watchedValues.wohnflaecheQm, watchedValues.monatsnettokaltmiete, form]);
+
+  function handleManualKaltmieteChange() {
+    setAutoSyncKaltmiete(false);
+  }
+
+  function handleAutoSyncKaltmieteChange(next: boolean) {
+    setAutoSyncKaltmiete(next);
+  }
 
   useEffect(() => {
     if (watchedValues.kaufnebenkostenModus !== 'detailliert') {
@@ -126,7 +148,7 @@ export function DashboardPage() {
           <KaufnebenkostenSection register={form.register} errors={errors} values={watchedValues} isOpen={sections.kaufnebenkosten} onToggle={(next) => setSectionOpen('kaufnebenkosten', next)} />
           <SanierungSection register={form.register} errors={errors} isOpen={sections.sanierung} onToggle={(next) => setSectionOpen('sanierung', next)} />
           <FinanzierungSection register={form.register} errors={errors} values={watchedValues} isOpen={sections.finanzierung} onToggle={(next) => setSectionOpen('finanzierung', next)} />
-          <MieteSection register={form.register} errors={errors} isOpen={sections.miete} onToggle={(next) => setSectionOpen('miete', next)} control={form.control} />
+          <MieteSection register={form.register} errors={errors} isOpen={sections.miete} onToggle={(next) => setSectionOpen('miete', next)} control={form.control} autoSyncKaltmiete={autoSyncKaltmiete} onAutoSyncKaltmieteChange={handleAutoSyncKaltmieteChange} onManualKaltmieteChange={handleManualKaltmieteChange} />
           <KostenSection register={form.register} errors={errors} values={watchedValues} isOpen={sections.kosten} onToggle={(next) => setSectionOpen('kosten', next)} />
           <RisikoSection register={form.register} errors={errors} isOpen={sections.risiko} onToggle={(next) => setSectionOpen('risiko', next)} />
           <SteuerSection register={form.register} errors={errors} values={watchedValues} isOpen={sections.steuer} onToggle={(next) => setSectionOpen('steuer', next)} />

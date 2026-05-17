@@ -1,4 +1,4 @@
-import { cleanup, render, screen, within } from '@testing-library/react';
+import { act, cleanup, render, screen, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it } from 'vitest';
 import { App } from '../src/App';
 import { defaultsBW } from '../src/domain/finance/defaults';
@@ -41,8 +41,9 @@ describe('Wertentwicklung section', () => {
     resetStores();
   });
 
-  it('renders valuation KPIs and a yearly chart instead of the placeholder panel', () => {
+  it('renders valuation KPIs and a yearly chart instead of the placeholder panel', async () => {
     render(<App />);
+    await act(async () => {});
 
     const section = screen.getByRole('region', { name: /wertentwicklung/i });
 
