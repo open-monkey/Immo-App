@@ -120,6 +120,53 @@ describe('breakEvenMieteProQmLiquiditaet regressions', () => {
   });
 });
 
+describe('selective financing basis', () => {
+  it('uses only selected cost buckets to determine debt principal', () => {
+    const common = {
+      sanierungskostenSumme: d(10000),
+      eigenkapital: d(60000),
+    };
+
+    const onlyPurchase = compute(immo({
+      ...common,
+      finanziertePosten: new Set(['kaufpreis'] as const),
+    }));
+    const purchaseAndClosing = compute(immo({
+      ...common,
+      finanziertePosten: new Set(['kaufpreis', 'kaufnebenkosten'] as const),
+    }));
+    const purchaseAndRenovation = compute(immo({
+      ...common,
+      finanziertePosten: new Set(['kaufpreis', 'sanierung'] as const),
+    }));
+    const allBuckets = compute(immo({
+      ...common,
+      finanziertePosten: new Set(['kaufpreis', 'kaufnebenkosten', 'sanierung'] as const),
+    }));
+
+    const closingCosts = allBuckets.intermediates.kaufnebenkostenSummeBerechnet;
+
+    expect(onlyPurchase.intermediates.fremdkapital.toNumber()).toBeCloseTo(190000, 2);
+    expect(purchaseAndClosing.intermediates.fremdkapital.minus(onlyPurchase.intermediates.fremdkapital).toNumber())
+      .toBeCloseTo(closingCosts.toNumber(), 2);
+    expect(purchaseAndRenovation.intermediates.fremdkapital.minus(onlyPurchase.intermediates.fremdkapital).toNumber())
+      .toBeCloseTo(10000, 2);
+    expect(allBuckets.intermediates.fremdkapital.minus(onlyPurchase.intermediates.fremdkapital).toNumber())
+      .toBeCloseTo(closingCosts.plus(10000).toNumber(), 2);
+  });
+
+  it('caps debt at zero when equity exceeds the selected financing basis', () => {
+    const result = compute(immo({
+      eigenkapital: d(300000),
+      finanziertePosten: new Set(['kaufpreis'] as const),
+    }));
+
+    expect(result.intermediates.fremdkapital.toNumber()).toBe(0);
+    expect(result.amortization.volltilgungErreicht).toBe(true);
+    expect(result.warnings.some((warning) => warning.includes('Eigenkapital übersteigt die finanzierte Basis'))).toBe(true);
+  });
+});
+
 describe('scenario KPI regressions', () => {
   it('(d) scenario cashflowNachSteuernJahr1 differs from cashflowVorSteuernJahr1 when tax is active', () => {
     const inputs = immo({

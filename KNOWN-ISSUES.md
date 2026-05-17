@@ -34,13 +34,13 @@ new items are discovered during work.
 - **Touches:** frontend/src/domain/finance/engine.ts
 
 ### Selective financing basis logic
-- **Status:** needs inspection
+- **Status:** resolved 2026-05-17
 - **Source:** formula verification pass
-- **Question:** logic that selects the financing basis (which costs are
-  financed vs. paid from equity) requires review for correctness and
-  edge-case handling
-- **Next step:** code inspection against `bauanleitung.md` definitions
-- **Touches:** backend calculation engine
+- **Resolution:** targeted regression tests verify that debt principal is based
+  only on selected financed buckets (`kaufpreis`, `kaufnebenkosten`,
+  `sanierung`) minus equity, and is capped at zero when equity exceeds the
+  selected financing basis.
+- **Touches:** frontend/src/domain/finance/__tests__/engine.test.ts
 
 ### Break-even rent denominator missing rental default risk factor
 - **Status:** resolved 2026-05-16
