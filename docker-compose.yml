@@ -28,6 +28,15 @@ services:
       - "127.0.0.1:3101:80"
     depends_on:
       - backend
+    networks:
+      default: {}
+      nginx_default:
+        aliases:
+          - immo-frontend
 
 volumes:
   pgdata:
+
+networks:
+  nginx_default:
+    external: true
